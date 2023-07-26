@@ -2,33 +2,9 @@
 
 declare(strict_types=1);
 
-use Framework\Http\Message\ServerRequest;
+namespace App;
 
 require_once '../vendor/autoload.php';
-
-
-function detectLang(
-    ServerRequest $request,
-    string $default = 'en',
-): string {
-    if (!empty($request->getQueryParams()['lang']) && is_string($request->getQueryParams()['lang'])) {
-        return $request->getQueryParams()['lang'];
-    }
-
-    if (!empty($request->getParsedBody()['lang']) && is_string($request->getParsedBody()['lang'])) {
-        return $request->getParsedBody()['lang'];
-    }
-
-    if (!empty($request->getCookieParams()['lang'])) {
-        return $request->getCookieParams()['lang'];
-    }
-
-    if (!empty($request->getHeaders()['Accept-Language'])) {
-        return substr($request->getHeaders()['Accept-Language'], 0, 2);
-    }
-
-    return $default;
-}
 
 $request = createServerRequestFromGlobals();
 

@@ -3,14 +3,15 @@
 declare(strict_types=1);
 
 use Framework\Http\Message\ServerRequest;
+use Framework\Http\Message\Stream;
 use Framework\Http\Message\Uri;
 
 function createServerRequestFromGlobals(
+    mixed $input = null,
     ?array $server = null,
     ?array $query = null,
     ?array $cookie = null,
     ?array $body = null,
-    ?string $input = null,
 ): ServerRequest {
     $server ??= $_SERVER;
 
@@ -34,7 +35,7 @@ function createServerRequestFromGlobals(
         method: $server['REQUEST_METHOD'],
         queryParams: $query ?? $_GET,
         cookieParams: $cookie ?? $_COOKIE,
-        body: $input ?? file_get_contents('php://input'),
+        body: new Stream($input ?? fopen('php://input', 'r')),
         parsedBody: $body ?? ($_POST ?: null),
         headers: $headers,
     );
