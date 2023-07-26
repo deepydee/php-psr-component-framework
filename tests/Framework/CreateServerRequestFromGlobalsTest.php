@@ -11,8 +11,9 @@ final class CreateServerRequestFromGlobalsTest extends TestCase
     public function testGlobals(): void
     {
         $server = [
+            'HTTPS' => 'on',
             'HTTP_HOST' => 'localhost',
-            'REQUEST_URI' => '/home',
+            'REQUEST_URI' => '/home?a=2',
             'REQUEST_METHOD' => 'POST',
             'CONTENT_TYPE' => 'text/plain',
             'CONTENT_LENGTH' => '4',
@@ -33,7 +34,7 @@ final class CreateServerRequestFromGlobalsTest extends TestCase
         );
 
         $this->assertEquals($server, $request->getServerParams());
-        $this->assertEquals('/home', $request->getUri());
+        $this->assertEquals('https://localhost/home?a=2', (string) $request->getUri());
         $this->assertEquals('POST', $request->geMethod());
         $this->assertEquals($query, $request->getQueryParams());
         $this->assertEquals([

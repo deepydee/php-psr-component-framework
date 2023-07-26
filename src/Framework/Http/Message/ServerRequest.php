@@ -7,8 +7,8 @@ namespace Framework\Http\Message;
 final class ServerRequest
 {
     public function __construct(
+        private Uri $uri,
         private array $serverParams = [],
-        private string $uri = '',
         private string $method = '',
         private array $queryParams = [],
         private array $headers = [],
@@ -23,7 +23,7 @@ final class ServerRequest
         return $this->serverParams;
     }
 
-    public function getUri(): string
+    public function getUri(): Uri
     {
         return $this->uri;
     }

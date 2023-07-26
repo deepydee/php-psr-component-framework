@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Framework\Http\Message\ServerRequest;
+use Framework\Http\Message\Uri;
 
 function createServerRequestFromGlobals(
     ?array $server = null,
@@ -27,7 +28,9 @@ function createServerRequestFromGlobals(
 
     return new ServerRequest(
         serverParams: $server,
-        uri: $server['REQUEST_URI'],
+        uri: new Uri(
+            (!empty($server['HTTPS']) ? 'https' : 'http') . '://' . $server['HTTP_HOST'] . $server['REQUEST_URI']
+        ),
         method: $server['REQUEST_METHOD'],
         queryParams: $query ?? $_GET,
         cookieParams: $cookie ?? $_COOKIE,
