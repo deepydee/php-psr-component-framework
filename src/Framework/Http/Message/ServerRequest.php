@@ -8,12 +8,12 @@ final class ServerRequest
 {
     public function __construct(
         private Uri $uri,
+        private Stream $body,
         private array $serverParams = [],
         private string $method = '',
         private array $queryParams = [],
         private array $headers = [],
         private array $cookieParams = [],
-        private string $body = '',
         private ?array $parsedBody = null,
     ) {
     }
@@ -48,7 +48,7 @@ final class ServerRequest
         return $this->cookieParams;
     }
 
-    public function getBody(): string
+    public function getBody(): Stream
     {
         return $this->body;
     }

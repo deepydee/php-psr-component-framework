@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Framework\Http;
 
+use Framework\Http\Message\Stream;
 use PHPUnit\Framework\TestCase;
 
 final class CreateServerRequestFromGlobalsTest extends TestCase
@@ -23,7 +24,8 @@ final class CreateServerRequestFromGlobalsTest extends TestCase
         $query = ['param' => 'value'];
         $cookie = ['name' => 'John'];
         $body = ['age' => '42'];
-        $input = 'Body';
+        $input = fopen('php://memory', 'r+');
+        fwrite($input, 'Body');
 
         $request = createServerRequestFromGlobals(
             server: $server,
@@ -45,6 +47,6 @@ final class CreateServerRequestFromGlobalsTest extends TestCase
         ], $request->getHeaders());
         $this->assertEquals($cookie, $request->getCookieParams());
         $this->assertEquals($body, $request->getParsedBody());
-        $this->assertEquals($input, $request->getBody());
+        $this->assertEquals('Body', (string) $request->getBody());
     }
 }

@@ -17,7 +17,7 @@ final class ServerRequestTest extends TestCase
             method: $method = 'GET',
             queryParams: $queryParams = ['name' => 'John'],
             cookieParams: $cookieParams = ['Cookie' => 'Val'],
-            body: $body = 'body',
+            body: $body = new Stream(fopen('php://memory', 'r')),
             parsedBody: $parsedBody = ['title' => 'Title'],
             headers: $headers = [
                 'X-Header' => 'Value',
