@@ -4,23 +4,53 @@ declare(strict_types=1);
 
 namespace App;
 
-require_once '../vendor/autoload.php';
-
-$request = createServerRequestFromGlobals();
+use Framework\Http\Message\ServerRequest;
 
 http_response_code(500);
 
-$name = $request->getQueryParams()['name'] ?? 'Guest';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-if (!is_string($name)) {
-    http_response_code(400);
-    exit;
+### Page
+
+/**
+ * @return array{statusCode: int, headers: array<string, string>, body: string}
+ */
+function home(ServerRequest $request): array
+{
+    $name = $request->getQueryParams()['name'] ?? 'Guest';
+
+    if (!is_string($name)) {
+        return [
+            'statusCode' => 400,
+            'headers' => [],
+            'body' => '',
+        ];
+    }
+
+    $lang = detectLang(request: $request, default: 'ru');
+
+    return [
+        'statusCode' => 200,
+        'headers' => [
+            'Content-Type' => 'text/plain; charset=utf-8',
+            'X-Frame-Options' => 'DENY',
+        ],
+        'body' => 'Hello, ' . $name . '! Your lang is ' . $lang
+    ];
 }
 
-$lang = detectLang(request: $request, default: 'ru');
+### Grabbing
+$request = createServerRequestFromGlobals();
 
-http_response_code(200);
-header('content-Type: text/plain; charset=utf-8');
-header('X-Frame-Options: DENY');
+# Running
+$response = home($request);
 
-echo 'Hello, ' . $name . '! Your lang is ' . $lang;
+#Sending
+
+http_response_code($response['statusCode']);
+
+foreach ($response['headers'] as $name => $value) {
+    header($name . ': ' . $value);
+}
+
+echo $response['body'];
