@@ -7,9 +7,9 @@ namespace Framework\Http\Message;
 class Response
 {
     public function __construct(
-        private int $statusCode,
-        private string $body,
-        private array $headers,
+        private int $statusCode = 200,
+        private array $headers = [],
+        private string $body = '',
     ) {
     }
 
