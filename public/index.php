@@ -26,13 +26,16 @@ function home(ServerRequest $request): Response
 
     $lang = detectLang(request: $request, default: 'ru');
 
+    $stream = new Stream(fopen('php://memory', 'r+'));
+    $stream->write('Hello, ' . $name . '! Your lang is ' . $lang);
+
     return new Response(
         statusCode: 200,
         headers: [
-            'Content-Type' => 'video/mp4',
+            'Content-Type' => 'text/plain; charset=utf-8', // 'Content-Type' => 'video/mp4',
             'X-Frame-Options' => 'DENY',
         ],
-        body: new Stream(fopen(__DIR__ . '/../video/video.mp4', 'r'))
+        body: $stream //: new Stream(fopen(__DIR__ . '/../video/video.mp4', 'r'))
     );
 }
 
