@@ -16,7 +16,7 @@ final class ResponseTest extends TestCase
                 'Header-1' => 'value-1',
                 'Header-2' => 'value-2',
             ],
-            $body = 'Body',
+            $body = new Stream(fopen('php://memory', 'r')),
         );
 
         $this->assertEquals($body, $response->getBody());

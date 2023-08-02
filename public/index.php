@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace App;
 
+use Framework\Http\Message\Response;
 use Framework\Http\Message\ServerRequest;
+use Framework\Http\Message\Stream;
+
+use function Framework\Http\emitResponseToSapi;
 
 http_response_code(500);
 
@@ -12,31 +16,24 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 ### Page
 
-/**
- * @return array{statusCode: int, headers: array<string, string>, body: string}
- */
-function home(ServerRequest $request): array
+function home(ServerRequest $request): Response
 {
     $name = $request->getQueryParams()['name'] ?? 'Guest';
 
     if (!is_string($name)) {
-        return [
-            'statusCode' => 400,
-            'headers' => [],
-            'body' => '',
-        ];
+        return new Response(statusCode: 400, headers: [], body: new Stream(fopen('php://memory', 'r')));
     }
 
     $lang = detectLang(request: $request, default: 'ru');
 
-    return [
-        'statusCode' => 200,
-        'headers' => [
-            'Content-Type' => 'text/plain; charset=utf-8',
+    return new Response(
+        statusCode: 200,
+        headers: [
+            'Content-Type' => 'video/mp4',
             'X-Frame-Options' => 'DENY',
         ],
-        'body' => 'Hello, ' . $name . '! Your lang is ' . $lang
-    ];
+        body: new Stream(fopen(__DIR__ . '/../video/video.mp4', 'r'))
+    );
 }
 
 ### Grabbing
@@ -47,10 +44,4 @@ $response = home($request);
 
 #Sending
 
-http_response_code($response['statusCode']);
-
-foreach ($response['headers'] as $name => $value) {
-    header($name . ': ' . $value);
-}
-
-echo $response['body'];
+emitResponseToSapi($response);
